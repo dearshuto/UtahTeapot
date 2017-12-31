@@ -16,17 +16,11 @@
 #include "utility.hpp"
 
 int main(int argc, const char * argv[]) {
-//    fj::BezierSurface bezie;
-//    bezie.ControllPoint(0) = fj::Position{0.0f, 1.0f, 0.0f};
-//    bezie.ControllPoint(1) = {{1.0f, 1.0f, 0.0f}};
-//    bezie.ControllPoint(2) = {{0.0f, 0.0f, 0.0f}};
-//    bezie.ControllPoint(3) = {{1.0f, 0.0f, 0.0f}};
-//    bezie.execute();
-    
-//    fj::Position position;
-    
-//    const auto meshData = fj::UtahTeapot::data();
-//    fj::UtahTeapot::savaToFile("test.obj");
+    const auto meshData = fj::UtahTeapot::data();
+    fj::UtahTeapot::savaToFile("test.obj", 0, 0);
+    fj::UtahTeapot::savaToFile("test_0x25.obj", 0, 25);
+    fj::UtahTeapot::savaToFile("test_25x0.obj", 25, 0);
+    fj::UtahTeapot::savaToFile("test_50x50.obj", 50, 50);
     
     return 0;
 }

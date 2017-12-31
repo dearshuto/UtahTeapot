@@ -7,34 +7,18 @@
 
 #include "position.hpp"
 
-//fj::Position::Position(const float x, const float y, const float z)
-//: X(x)
-//, Y(y)
-//, Z(z)
-//{
-//    
-//}
-//
-//fj::Position& fj::Position::operator=(const fj::Position & other)
-//{
-//    X = other.X;
-//    Y = other.Y;
-//    Z = other.Z;
-//    return *this;
-//}
-//
-//fj::Position& fj::Position::operator+(const fj::Position & position)
-//{
-//    X += position.X;
-//    Y += position.Y;
-//    Z += position.Z;
-//    return *this;
-//}
-
-fj::Position& operator*(const float n, fj::Position& position)
+fj::Position::Position(const float x, const float y, const float z)
+: X(x), Y(y), Z(z)
 {
-    position.X *= n;
-    position.Y *= n;
-    position.Z *= n;
-    return position;
+    
+}
+
+fj::Position fj::Position::operator+(const fj::Position & position)const
+{
+    return fj::Position{X + position.X, Y + position.Y, Z + position.Z};
+}
+
+fj::Position operator*(const float n, const fj::Position& position)
+{
+    return fj::Position{n*position.X, n*position.Y, n*position.Z};
 }

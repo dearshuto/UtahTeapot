@@ -18,31 +18,30 @@ uint64_t fj::BezierSurface::execute()
     //! ベジエ曲面上の UV 座標を表す構造体。
     struct BezierCoordinate
     {
-        float U{-1.0f}; // 無効な値で初期化
-        float V{-1.0f}; // 無効な値で初期化
+        float U{0.0f}; // 無効な値で初期化
+        float V{0.0f}; // 無効な値で初期化
     };
     
     // ベジエ曲面を消去
     m_indices.clear();
     m_vertices.clear();
 
-    const std::uint64_t kN = getDiv();
-    const std::uint64_t kM = getSubDiv();
+   // たてよこの分割数を取得。
+    // 両端に頂点があるので +2 してます。
+    const std::uint64_t kN = getDiv() + 2;
+    const std::uint64_t kM = getSubDiv() + 2;
     std::vector<BezierCoordinate> uv;
-    uv.resize(kN*kM);
-    m_vertices.resize(kN* kM);
     
-    // 1. ベジエ曲面上の座標を計算
-    // まずはすべての UV を (0, 0) で初期化
-//    std::fill(std::begin(uv), std::end(uv)
-//              , [](BezierCoordinate& uv)
-//              {
-//                  uv.U = 0.0f;
-//                  uv.V = 0.0f;
-//              });
+    // 頂点数分の領域を確保
+    uv.resize(kN * kM);
+    m_vertices.resize(kN * kM);
     
-    const float kStrideU = 1.0f / (kN+1);
-    const float kStrideV = 1.0f / (kM+1);
+    // ベジエ曲面上で隣り合う頂点の距離
+    // 等分割を前提にしているので、すべて同じ感覚で並んでます。
+    const float kStrideU = 1.0f / (getDiv()+1);
+    const float kStrideV = 1.0f / (getSubDiv()+1);
+    
+    // 求める頂点の UV 座標を算出。
     for (std::uint32_t n = 0; n < kN; ++n) {
         for (std::uint32_t m = 0; m < kM; ++m)
         {
@@ -51,38 +50,34 @@ uint64_t fj::BezierSurface::execute()
         }
     }
 
-    // 2. ベジエ曲面上の座標を算出
+    // ベジエ曲面上の座標を算出
     for (std::uint32_t n = 0; n < kN; ++n) {
         for (std::uint32_t m = 0; m < kM; ++m)
         {
-            Position& position = m_vertices[n+m];
+            Position& position = m_vertices[n+m*kN];
+            const float kU = uv[n + kN*m].U;
+            const float kV = uv[n + kN*m].V;
+            // ずべての制御点からの影響を足しこむ
             for (int i = 0; i < 4; ++i) {
                 for (int j = 0; j < 4; ++j)
                 {
-                    const float kBu = 1.0f;
-                    const float kBv = 1.0f;                
+                    const fj::Position& kControlPoint = ControllPoint(i + 4*j);
+                    const float kBu = ComputeBernsteinPolynormal(kU, i);
+                    const float kBv = ComputeBernsteinPolynormal(kV, j);
+                    position += kBu * kBv * kControlPoint;
                 }
             }
-
         }
     }
     
-    constexpr float kDiv = 50.0f;
-    
-    
-    m_vertices.push_back(ControllPoint(0));
-
-    for (int i = 0; i < 3; ++i)
-    {
-        for (int j = 0; j < static_cast<int>(kDiv); ++j)
+    for (std::uint32_t n = 0; n < kN-1; ++n){
+        for (std::uint32_t m = 0; m <kM-1; ++m)
         {
-            const int kStride = (static_cast<int>(kDiv)+1);
-            const int kLeftUp = i*kStride + j;
-            const int kLeftDown = kLeftUp + kStride;
+            const int kLeftUp = n + m*kN;
             m_indices.push_back(kLeftUp);
             m_indices.push_back(kLeftUp+1);
-            m_indices.push_back(kLeftDown + 1);
-            m_indices.push_back(kLeftDown);
+            m_indices.push_back(kLeftUp + kN + 1);
+            m_indices.push_back(kLeftUp + kN);
         }
     }
     
@@ -100,15 +95,25 @@ float fj::BezierSurface::ComputeBernsteinPolynormal(const float t, std::uint32_t
     // 二項係数
     const float kBinomialCoefficients =  fj::Factrial(n) / (fj::Factrial(i)*fj::Factrial(n-i));
     
-    return kBinomialCoefficients * std::pow<float>(1.0f-t, n-i);
+    return kBinomialCoefficients * std::pow(t, i) * std::pow<float>(1.0f-t, n-i);
 }
 
 std::uint64_t fj::BezierSurface::getDiv()const
 {
-    return m_DivN;
+    return m_Div;
+}
+
+void fj::BezierSurface::setDiv(const std::uint64_t div)
+{
+    m_Div = div;
 }
 
 std::uint64_t fj::BezierSurface::getSubDiv()const
 {
-    return m_DivM;
+    return m_SubDiv;
+}
+
+void fj::BezierSurface::setSubDiv(const std::uint64_t subDiv)
+{
+    m_SubDiv = subDiv;
 }

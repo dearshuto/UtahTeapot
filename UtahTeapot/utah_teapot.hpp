@@ -12,27 +12,31 @@
 #include <array>
 #include <string>
 #include <vector>
-#include "position.cpp"
+#include "position.hpp"
 
 namespace fj
 {
-//    class UtahTeapot
-//    {
-//    private:
-//        struct Data
-//        {
-//            std::vector<uint32_t> Indecies;
-//            std::vector<fj::Position> Verticies;
-//        };
-//    private:
-//        UtahTeapot() = default;
-//    public:
-//        ~UtahTeapot() = default;
-//        
-////        static fj::UtahTeapot::Data data();
-//        
-//        static bool savaToFile(const std::string& filename);
-//    };
+    class UtahTeapot
+    {
+    private:
+        struct Data
+        {
+            std::vector<uint32_t> Indecies;
+            std::vector<fj::Position> Verticies;
+        };
+    private:
+        UtahTeapot() = default;
+    public:
+        ~UtahTeapot() = default;
+        
+        static fj::UtahTeapot::Data data();
+        
+        static bool savaToFile(const std::string& filename);
+
+        //! @param[in] div 横方向の分割数
+        //! @param[in] subDiv 縦方向の分割数
+        static bool savaToFile(const std::string& filename, const std::uint64_t div, const std::uint64_t subDiv);
+    };
 
 }
 

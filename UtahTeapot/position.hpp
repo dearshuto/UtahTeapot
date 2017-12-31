@@ -14,19 +14,25 @@ namespace fj {
     {
     public:
         Position() = default;
-//        Position(const fj::Position&) = default;
-//        Position (const float x, const float y, const float z);
-//        virtual~Position() = default;
-//
-//        inline Position& operator=(const fj::Position& other);
-//        inline Position& operator+(const fj::Position& position);
-//
+        Position(const fj::Position&) = default;
+        Position(const float , const float y, const float z);
+        virtual~Position() = default;
+
+        inline fj::Position operator+(const fj::Position& position)const;
+        inline fj::Position& operator+=(const fj::Position& other)
+        {
+            this->X += other.X;
+            this->Y += other.Y;
+            this->Z += other.Z;
+            return *this;
+        }
+        
         float X;
         float Y;
         float Z;
     };
 }
 
-fj::Position& operator*(const float n, fj::Position& position);
+fj::Position operator*(const float n, const fj::Position& position);
 
 #endif /* position_hpp */
