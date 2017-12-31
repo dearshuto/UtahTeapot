@@ -12,18 +12,15 @@
 #include <ostream>
 #include "mesh_type.h"
 #include "utah_teapot.hpp"
+#include "bezier_surface.hpp"
+#include "utility.hpp"
 
 int main(int argc, const char * argv[]) {
-//    std::ifstream input("teapot");
-//    std::ofstream output("utahteapot_split");
-//    std::string line;
-//    while (std::getline(input, line))
-//    {
-//        output << "{" << line << "}," << std::endl;
-//    }
-    
-    const auto meshData = fj::UtahTeapot<SquareMesh>::data();
-    fj::UtahTeapot<SquareMesh>::savaToFile("test.obj");
+    const auto meshData = fj::UtahTeapot::data();
+    fj::UtahTeapot::savaToFile("test.obj", 0, 0);
+    fj::UtahTeapot::savaToFile("test_0x25.obj", 0, 25);
+    fj::UtahTeapot::savaToFile("test_25x0.obj", 25, 0);
+    fj::UtahTeapot::savaToFile("test_50x50.obj", 50, 50);
     
     return 0;
 }

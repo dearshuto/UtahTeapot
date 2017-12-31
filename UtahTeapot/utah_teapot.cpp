@@ -11,6 +11,7 @@
 #include <functional>
 #include "bezier_surface.hpp"
 #include "mesh_type.h"
+#include "position.hpp"
 #include "utah_teapot.hpp"
 
 // ベジエ曲面の制御点へのインデックス
@@ -360,26 +361,26 @@ constexpr std::array<std::array<float, 3>, 306> g_vertices = {{
     {1.425,-0.798,0.0}
 }};
 
-template<class T>
-constexpr typename  fj::UtahTeapot<T>::Data fj::UtahTeapot<T>::data()
+typename  fj::UtahTeapot::Data fj::UtahTeapot::data()
 {
-    fj::UtahTeapot<T>::Data data;
+    fj::UtahTeapot::Data data;
     int indexStride = 0;
-    
+
     std::for_each(g_indices.begin(), g_indices.end(), [&](const Bezier16IndicesArray& bezierIndiices){
             {
-                fj::BezierSurface<T> bezier;
+                fj::BezierSurface bezier;
                 for (int i = 0; i < bezierIndiices.size(); i++)
                 {
-                    bezier.ControllPoint(i) = g_vertices[bezierIndiices[i]-1];
+                    const auto& kVertices =g_vertices[bezierIndiices[i]-1];
+                    bezier.ControllPoint(i) = fj::Position{kVertices[0], kVertices[1], kVertices[2]};
                 }
-        
+
                 bezier.execute();
-        
+
                 for (const auto& index: bezier.getMeshInices())
                 {
                     const auto kVertex = bezier.getMeshVertex(index);
-                    data.Verticies.push_back(kVertex);
+                    data.Verticies.emplace_back(kVertex.X, kVertex.Y, kVertex.Z);
                 }
                 indexStride += bezier.getMeshInices().size();
             }
@@ -387,18 +388,25 @@ constexpr typename  fj::UtahTeapot<T>::Data fj::UtahTeapot<T>::data()
     return data;
 }
 
-template<class T>
-bool fj::UtahTeapot<T>::savaToFile(const std::string &filename)
+bool fj::UtahTeapot::savaToFile(const std::string &filename)
+{
+    return savaToFile(filename, 0, 0);
+}
+
+bool fj::UtahTeapot::savaToFile(const std::string &filename, const std::uint64_t div, const std::uint64_t subDiv)
 {
     std::ofstream output(filename);
     int indexStride = 0;
-
+    
     for (const Bezier16IndicesArray& bezierIndiices: g_indices)
     {
-        fj::BezierSurface<T> bezier;
+        fj::BezierSurface bezier;
+        bezier.setDiv(div);
+        bezier.setSubDiv(subDiv);
         for (int i = 0; i < bezierIndiices.size(); i++)
         {
-            bezier.ControllPoint(i) = g_vertices[bezierIndiices[i]-1];
+            const auto& kVertex = g_vertices[bezierIndiices[i]-1];
+            bezier.ControllPoint(i) = fj::Position{kVertex[0], kVertex[1], kVertex[2]};
         }
         
         bezier.execute();
@@ -406,15 +414,16 @@ bool fj::UtahTeapot<T>::savaToFile(const std::string &filename)
         for (const auto& index: bezier.getMeshInices())
         {
             const auto kVertex = bezier.getMeshVertex(index);
-            output << "v" << " " << kVertex[0] << " " << kVertex[1] << " " << kVertex[2] << std::endl;
+            output << "v" << " " << kVertex.X << " " << kVertex.Y << " " << kVertex.Z << std::endl;
         }
         
-        output << "f" << " " << indexStride + 1 << " " << indexStride + 2 << " " << indexStride + 3 << " " << indexStride + 4 << std::endl;
-        indexStride += bezier.getMeshInices().size();
+        const std::vector<uint64_t>& kIndeces = bezier.getMeshInices();
+        for (std::uint64_t i = 0; i < kIndeces.size(); i+=4)
+        {
+            output << "f" << " " << indexStride + i+1 << " " << indexStride + i+2 << " " << indexStride + i+3 << " " << indexStride + i+4 << std::endl;
+        }
+        indexStride += kIndeces.size();
     }
     
     return true;
 }
-
-template class fj::UtahTeapot<TriangleMesh>;
-template class fj::UtahTeapot<SquareMesh>;
