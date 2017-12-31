@@ -12,30 +12,28 @@
 #include <array>
 #include <string>
 #include <vector>
+#include "position.cpp"
 
-namespace fj {
-    template<typename T> class UtahTeapot;
-}
-
-template<typename T>
-class fj::UtahTeapot
+namespace fj
 {
-public:
-    typedef std::array<float, 3> Position;
-private:
-    struct Data
-    {
-        std::vector<uint32_t> Indecies;
-        std::vector<Position> Verticies;
-    };
-private:
-    UtahTeapot() = default;
-public:
-    ~UtahTeapot() = default;
-    
-    static constexpr fj::UtahTeapot<T>::Data data();
-    
-    static bool savaToFile(const std::string& filename);
-};
+//    class UtahTeapot
+//    {
+//    private:
+//        struct Data
+//        {
+//            std::vector<uint32_t> Indecies;
+//            std::vector<fj::Position> Verticies;
+//        };
+//    private:
+//        UtahTeapot() = default;
+//    public:
+//        ~UtahTeapot() = default;
+//        
+////        static fj::UtahTeapot::Data data();
+//        
+//        static bool savaToFile(const std::string& filename);
+//    };
+
+}
 
 #endif /* utah_teapot_hpp */

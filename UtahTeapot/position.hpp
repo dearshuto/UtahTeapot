@@ -1,0 +1,32 @@
+//
+//  position.hpp
+//  utah_teapod
+//
+//  Created by Shuto Shikama on 2017/12/31.
+//
+
+#ifndef position_hpp
+#define position_hpp
+
+namespace fj {
+    //! @brief 3 次元の位置情報です。
+    class Position
+    {
+    public:
+        Position() = default;
+//        Position(const fj::Position&) = default;
+//        Position (const float x, const float y, const float z);
+//        virtual~Position() = default;
+//
+//        inline Position& operator=(const fj::Position& other);
+//        inline Position& operator+(const fj::Position& position);
+//
+        float X;
+        float Y;
+        float Z;
+    };
+}
+
+fj::Position& operator*(const float n, fj::Position& position);
+
+#endif /* position_hpp */
