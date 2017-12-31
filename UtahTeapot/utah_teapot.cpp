@@ -408,9 +408,13 @@ bool fj::UtahTeapot<T>::savaToFile(const std::string &filename)
             const auto kVertex = bezier.getMeshVertex(index);
             output << "v" << " " << kVertex[0] << " " << kVertex[1] << " " << kVertex[2] << std::endl;
         }
-        
-        output << "f" << " " << indexStride + 1 << " " << indexStride + 2 << " " << indexStride + 3 << " " << indexStride + 4 << std::endl;
-        indexStride += bezier.getMeshInices().size();
+
+        const std::vector<uint64_t>& kIndeces = bezier.getMeshInices();
+        for (std::uint64_t i = 0; i < kIndeces.size(); i+=4)
+        {
+            output << "f" << " " << indexStride + i+1 << " " << indexStride + i+2 << " " << indexStride + i+3 << " " << indexStride + i+4 << std::endl;
+        }
+        indexStride += kIndeces.size();
     }
     
     return true;

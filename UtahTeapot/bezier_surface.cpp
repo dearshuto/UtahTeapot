@@ -24,12 +24,36 @@ uint64_t fj::BezierSurface<T>::execute()
     
     m_indices.clear();
     m_vertices.clear();
-    T::VertexNumPerMesh;
-    m_indices = {0, 1, 2, 3};
+    
+    constexpr float kDiv = 50.0f;
     m_vertices.push_back(ControllPoint(0));
-    m_vertices.push_back(ControllPoint(3));
-    m_vertices.push_back(ControllPoint(15));
-    m_vertices.push_back(ControllPoint(12));
+    for (std::uint32_t i = 0; i < 4; ++i)
+    {
+        for (float t = 0; t <= 1; t +=1.0f/kDiv)
+        {
+            const auto kPosition = computeBezier3(
+                                                  ControllPoint(i*4+0)
+                                                  , ControllPoint(i*4+1)
+                                                  , ControllPoint(i*4+2)
+                                                  , ControllPoint(i*4+3)
+                                                  , t);
+            m_vertices.push_back(kPosition);
+        }
+    }
+
+    for (int i = 0; i < 3; ++i)
+    {
+        for (int j = 0; j < static_cast<int>(kDiv); ++j)
+        {
+            const int kStride = (static_cast<int>(kDiv)+1);
+            const int kLeftUp = i*kStride + j;
+            const int kLeftDown = kLeftUp + kStride;
+            m_indices.push_back(kLeftUp);
+            m_indices.push_back(kLeftUp+1);
+            m_indices.push_back(kLeftDown + 1);
+            m_indices.push_back(kLeftDown);
+        }
+    }
     
     return 1;
 }

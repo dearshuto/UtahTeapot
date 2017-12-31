@@ -12,15 +12,18 @@
 #include <ostream>
 #include "mesh_type.h"
 #include "utah_teapot.hpp"
+#include "bezier_surface.hpp"
 
 int main(int argc, const char * argv[]) {
-//    std::ifstream input("teapot");
-//    std::ofstream output("utahteapot_split");
-//    std::string line;
-//    while (std::getline(input, line))
-//    {
-//        output << "{" << line << "}," << std::endl;
-//    }
+    fj::BezierSurface<SquareMesh> bezie;
+    bezie.ControllPoint(0) = {{0.0f, 1.0f, 0.0f}};
+    bezie.ControllPoint(1) = {{1.0f, 1.0f, 0.0f}};
+    bezie.ControllPoint(2) = {{0.0f, 0.0f, 0.0f}};
+    bezie.ControllPoint(3) = {{1.0f, 0.0f, 0.0f}};
+    bezie.execute();
+
+    std::ofstream input("test.obj");
+    
     
     const auto meshData = fj::UtahTeapot<SquareMesh>::data();
     fj::UtahTeapot<SquareMesh>::savaToFile("test.obj");
