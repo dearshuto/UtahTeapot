@@ -14,10 +14,13 @@ namespace fj {
     {
     public:
         Position() = default;
-        Position(const fj::Position&) = default;
-        Position(const float , const float y, const float z);
-        virtual~Position() = default;
+        ~Position() = default;
 
+        Position(const fj::Position&) = default;
+        inline fj::Position& operator=(const fj::Position&) = default;
+        
+        Position(const float , const float y, const float z);
+        
         inline fj::Position operator+(const fj::Position& position)const;
         inline fj::Position& operator+=(const fj::Position& other)
         {
