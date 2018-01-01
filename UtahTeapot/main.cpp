@@ -16,11 +16,21 @@
 #include "utility.hpp"
 
 int main(int argc, const char * argv[]) {
-    const auto meshData = fj::UtahTeapot::data();
-    fj::UtahTeapot::savaToFile("test.obj", 0, 0);
-    fj::UtahTeapot::savaToFile("test_0x25.obj", 0, 25);
-    fj::UtahTeapot::savaToFile("test_25x0.obj", 25, 0);
-    fj::UtahTeapot::savaToFile("test_50x50.obj", 50, 50);
+    
+    fj::UtahTeapot utahTeapod;
+    utahTeapod.update(50, 50);
+
+    std::ofstream output("utah_teapot_50x50.obj");
+    
+    for (const auto& kPosition : utahTeapod.getVertices())
+    {
+        output << "v " << kPosition.X << " " << kPosition.Y << " " << kPosition.Z << std::endl;
+    }
+    
+    for (std::uint64_t i = 0; i < utahTeapod.getIndices().size(); i += 4)
+    {
+        output << "f " << utahTeapod.getIndices()[i+0] << " " << utahTeapod.getIndices()[i+1] << " " << utahTeapod.getIndices()[i+2] << " " << utahTeapod.getIndices()[i+3] << std::endl;
+    }
     
     return 0;
 }

@@ -361,69 +361,34 @@ constexpr std::array<std::array<float, 3>, 306> g_vertices = {{
     {1.425,-0.798,0.0}
 }};
 
-typename  fj::UtahTeapot::Data fj::UtahTeapot::data()
+void fj::UtahTeapot::update(const std::uint64_t div, const std::uint64_t subDiv)
 {
-    fj::UtahTeapot::Data data;
     int indexStride = 0;
-
-    std::for_each(g_indices.begin(), g_indices.end(), [&](const Bezier16IndicesArray& bezierIndiices){
-            {
-                fj::BezierSurface bezier;
-                for (int i = 0; i < bezierIndiices.size(); i++)
-                {
-                    const auto& kVertices =g_vertices[bezierIndiices[i]-1];
-                    bezier.ControllPoint(i) = fj::Position{kVertices[0], kVertices[1], kVertices[2]};
-                }
-
-                bezier.execute();
-
-                for (const auto& index: bezier.getMeshInices())
-                {
-                    const auto kVertex = bezier.getMeshVertex(index);
-                    data.Verticies.emplace_back(kVertex.X, kVertex.Y, kVertex.Z);
-                }
-                indexStride += bezier.getMeshInices().size();
-            }
-    });
-    return data;
-}
-
-bool fj::UtahTeapot::savaToFile(const std::string &filename)
-{
-    return savaToFile(filename, 0, 0);
-}
-
-bool fj::UtahTeapot::savaToFile(const std::string &filename, const std::uint64_t div, const std::uint64_t subDiv)
-{
-    std::ofstream output(filename);
-    int indexStride = 0;
-    
     for (const Bezier16IndicesArray& bezierIndiices: g_indices)
     {
         fj::BezierSurface bezier;
-        bezier.setDiv(div);
-        bezier.setSubDiv(subDiv);
         for (int i = 0; i < bezierIndiices.size(); i++)
         {
             const auto& kVertex = g_vertices[bezierIndiices[i]-1];
-            bezier.ControllPoint(i) = fj::Position{kVertex[0], kVertex[1], kVertex[2]};
+            bezier.getControllPoint(i) = fj::Position{kVertex[0], kVertex[1], kVertex[2]};
         }
         
-        bezier.execute();
+        bezier.update(div, subDiv);
         
         for (const auto& index: bezier.getMeshInices())
         {
             const auto kVertex = bezier.getMeshVertex(index);
-            output << "v" << " " << kVertex.X << " " << kVertex.Y << " " << kVertex.Z << std::endl;
+            m_vertices.push_back(kVertex);
         }
         
         const std::vector<uint64_t>& kIndeces = bezier.getMeshInices();
         for (std::uint64_t i = 0; i < kIndeces.size(); i+=4)
         {
-            output << "f" << " " << indexStride + i+1 << " " << indexStride + i+2 << " " << indexStride + i+3 << " " << indexStride + i+4 << std::endl;
+            m_indices.push_back(indexStride + i+1);
+            m_indices.push_back(indexStride + i+2);
+            m_indices.push_back(indexStride + i+3);
+            m_indices.push_back(indexStride + i+4);
         }
         indexStride += kIndeces.size();
     }
-    
-    return true;
 }

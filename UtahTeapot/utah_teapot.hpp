@@ -9,13 +9,14 @@
 #ifndef utah_teapot_hpp
 #define utah_teapot_hpp
 
-#include <array>
 #include <string>
 #include <vector>
 #include "position.hpp"
 
 namespace fj
 {
+    //! @brief ベジエ曲面の制御点から四角ポリゴンを抽出して構成されるユタティーポッド
+    //! @detail 注ぎ口が x 軸, ふたが z 軸方向のモデルが生成されます。
     class UtahTeapot
     {
     private:
@@ -24,18 +25,20 @@ namespace fj
             std::vector<uint32_t> Indecies;
             std::vector<fj::Position> Verticies;
         };
-    private:
-        UtahTeapot() = default;
     public:
+        UtahTeapot() = default;
         ~UtahTeapot() = default;
         
-        static fj::UtahTeapot::Data data();
+        //! メッシュデータを更新します。
+        void update(const std::uint64_t div, const std::uint64_t subDiv);
         
-        static bool savaToFile(const std::string& filename);
+        const  std::vector<fj::Position>& getVertices()const{return m_vertices;}
+        
+        const std::vector<std::uint64_t>& getIndices()const{return m_indices;}
 
-        //! @param[in] div 横方向の分割数
-        //! @param[in] subDiv 縦方向の分割数
-        static bool savaToFile(const std::string& filename, const std::uint64_t div, const std::uint64_t subDiv);
+    private:
+        std::vector<fj::Position> m_vertices;
+        std::vector<std::uint64_t> m_indices;
     };
 
 }
