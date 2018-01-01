@@ -367,15 +367,13 @@ void fj::UtahTeapot::update(const std::uint64_t div, const std::uint64_t subDiv)
     for (const Bezier16IndicesArray& bezierIndiices: g_indices)
     {
         fj::BezierSurface bezier;
-        bezier.setDiv(div);
-        bezier.setSubDiv(subDiv);
         for (int i = 0; i < bezierIndiices.size(); i++)
         {
             const auto& kVertex = g_vertices[bezierIndiices[i]-1];
-            bezier.ControllPoint(i) = fj::Position{kVertex[0], kVertex[1], kVertex[2]};
+            bezier.getControllPoint(i) = fj::Position{kVertex[0], kVertex[1], kVertex[2]};
         }
         
-        bezier.execute();
+        bezier.update(div, subDiv);
         
         for (const auto& index: bezier.getMeshInices())
         {

@@ -18,9 +18,9 @@
 int main(int argc, const char * argv[]) {
     
     fj::UtahTeapot utahTeapod;
-    utahTeapod.update(5, 5);
+    utahTeapod.update(50, 50);
 
-    std::ofstream output("utah_teapot_5x5.obj");
+    std::ofstream output("utah_teapot_50x50.obj");
     
     for (const auto& kPosition : utahTeapod.getVertices())
     {

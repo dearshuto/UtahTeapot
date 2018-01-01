@@ -14,7 +14,7 @@ namespace fj{
         
     //! @brief n の階乗を求めます。
     //! @param[in] n 階乗を求めたい整数。
-    //! @pre n < 64 （オーバーフローが発生しない値）
+    //! @pre n! の計算結果が std::uint64_t でオーバーフローが発生しない値
     std::uint64_t Factrial(const std::uint64_t n);
 }
 
