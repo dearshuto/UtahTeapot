@@ -16,6 +16,33 @@ namespace fj{
     //! @param[in] n 階乗を求めたい整数。
     //! @pre n! の計算結果が std::uint64_t でオーバーフローが発生しない値
     std::uint64_t Factrial(const std::uint64_t n);
+    
+    //! @brief float 型 3 次元ベクトル
+    //! @detail デフォルトですべての要素が 0 で初期化されています。
+    //! @note 最低限の演算機能しかサポートしていません。
+    class Vector
+    {
+    public:
+        Vector() = default;
+        ~Vector() = default;
+       
+        Vector(const float x, const float y, const float z);
+        
+        inline fj::Vector operator+(const fj::Vector& vector)const;
+        inline fj::Vector& operator+=(const fj::Vector& vector);
+        
+        float X{0.0f};
+        float Y{0.0f};
+        float Z{0.0f};
+    };
+    
+    //! 頂点座標と頂点法線
+    struct Vertex
+    {
+    public:
+        fj::Vector Position{0.0f, 0.0f, 0.0f};
+        fj::Vector Normal;
+    };
 }
 
 #endif /* utility_hpp */
