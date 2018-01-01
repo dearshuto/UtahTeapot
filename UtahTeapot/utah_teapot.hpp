@@ -11,7 +11,7 @@
 
 #include <string>
 #include <vector>
-#include "position.hpp"
+#include "utility.hpp"
 
 namespace fj
 {
@@ -19,12 +19,6 @@ namespace fj
     //! @detail 注ぎ口が x 軸, ふたが z 軸方向のモデルが生成されます。
     class UtahTeapot
     {
-    private:
-        struct Data
-        {
-            std::vector<uint32_t> Indecies;
-            std::vector<fj::Position> Verticies;
-        };
     public:
         UtahTeapot() = default;
         ~UtahTeapot() = default;
@@ -32,12 +26,12 @@ namespace fj
         //! メッシュデータを更新します。
         void update(const std::uint64_t div, const std::uint64_t subDiv);
         
-        const  std::vector<fj::Position>& getVertices()const{return m_vertices;}
+        const  std::vector<fj::Vertex>& getVertices()const{return m_vertices;}
         
         const std::vector<std::uint64_t>& getIndices()const{return m_indices;}
 
     private:
-        std::vector<fj::Position> m_vertices;
+        std::vector<fj::Vertex> m_vertices;
         std::vector<std::uint64_t> m_indices;
     };
 

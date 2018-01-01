@@ -11,7 +11,7 @@
 #include <functional>
 #include "bezier_surface.hpp"
 #include "mesh_type.h"
-#include "position.hpp"
+#include "utility.hpp"
 #include "utah_teapot.hpp"
 
 // ベジエ曲面の制御点へのインデックス
@@ -370,7 +370,7 @@ void fj::UtahTeapot::update(const std::uint64_t div, const std::uint64_t subDiv)
         for (int i = 0; i < bezierIndiices.size(); i++)
         {
             const auto& kVertex = g_vertices[bezierIndiices[i]-1];
-            bezier.getControllPoint(i) = fj::Position{kVertex[0], kVertex[1], kVertex[2]};
+            bezier.getControllPoint(i) = fj::Vector{kVertex[0], kVertex[1], kVertex[2]};
         }
         
         bezier.update(div, subDiv);

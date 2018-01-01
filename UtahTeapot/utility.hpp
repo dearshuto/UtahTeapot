@@ -28,8 +28,23 @@ namespace fj{
        
         Vector(const float x, const float y, const float z);
         
+        inline fj::Vector operator*(const float n)const
+        {
+            return fj::Vector{
+                this->X*n
+                , this->Y*n
+                , this->Z*n};
+        }
+        
         inline fj::Vector operator+(const fj::Vector& vector)const;
-        inline fj::Vector& operator+=(const fj::Vector& vector);
+        inline fj::Vector& operator+=(const fj::Vector& vector)
+        {
+            this->X += vector.X;
+            this->Y += vector.Y;
+            this->Z += vector.Z;
+            return *this;
+        }
+
         
         float X{0.0f};
         float Y{0.0f};
@@ -43,6 +58,12 @@ namespace fj{
         fj::Vector Position{0.0f, 0.0f, 0.0f};
         fj::Vector Normal;
     };
+}
+
+// 数字 * fj::Vector の演算子
+inline fj::Vector operator*(const float n, const fj::Vector& vector)
+{
+    return fj::Vector{vector*n};
 }
 
 #endif /* utility_hpp */

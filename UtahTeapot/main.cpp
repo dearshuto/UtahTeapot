@@ -18,13 +18,13 @@
 int main(int argc, const char * argv[]) {
     
     fj::UtahTeapot utahTeapod;
-    utahTeapod.update(50, 50);
+    utahTeapod.update(25, 25);
 
-    std::ofstream output("utah_teapot_50x50.obj");
+    std::ofstream output("utah_teapot_25x25.obj");
     
     for (const auto& kPosition : utahTeapod.getVertices())
     {
-        output << "v " << kPosition.X << " " << kPosition.Y << " " << kPosition.Z << std::endl;
+        output << "v " << kPosition.Position.X << " " << kPosition.Position.Y << " " << kPosition.Position.Z << std::endl;
     }
     
     for (std::uint64_t i = 0; i < utahTeapod.getIndices().size(); i += 4)
