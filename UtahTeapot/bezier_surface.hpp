@@ -12,7 +12,7 @@
 #include <array>
 #include <cstdint>
 #include <vector>
-#include "position.hpp"
+#include "utility.hpp"
 
 namespace fj {
     class BezierSurface;
@@ -47,12 +47,12 @@ public:
     //! v  4---5---6---7
     //!    8---9---10--11
     //!    12--13--14--15
-    Position& getControllPoint(const uint8_t index)
+    Vector& getControllPoint(const uint8_t index)
     {
         return m_controllPoints[index];
     }
     
-    const Position& getMeshVertex(const uint64_t index)
+    const Vertex& getMeshVertex(const uint64_t index)
     {
         return m_vertices[index];
     }
@@ -70,10 +70,10 @@ private:
      8---9---10--11
      12--13--14--15
      */
-    std::array<fj::Position, 16> m_controllPoints;
+    std::array<Vector, 16> m_controllPoints;
     
     std::vector<uint64_t> m_indices;
-    std::vector<fj::Position> m_vertices;
+    std::vector<Vertex> m_vertices;
 };
 
 #endif /* bezier_surface_hpp */

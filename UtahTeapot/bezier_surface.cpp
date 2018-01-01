@@ -63,19 +63,17 @@ void fj::BezierSurface::update(const std::uint32_t div, std::uint32_t subDiv)
             const float kV = uv[n + kN*m].V;
             
             // 足しこみを行うので 全ての要素を 0 で初期化しておく
-            Position& position = m_vertices[n+m*kN];
-            position.X = 0.0f;
-            position.Y = 0.0f;
-            position.Z = 0.0f;
+            fj::Vertex& position = m_vertices[n+m*kN];
+            position.Position = fj::Vector{0.0f, 0.0f, 0.0f};
             
             // ずべての制御点からの影響を足しこむ
             for (int i = 0; i < 4; ++i) {
                 for (int j = 0; j < 4; ++j)
                 {
-                    const fj::Position& kControlPoint = getControllPoint(i + 4*j);
+                    const fj::Vector& kControlPoint = getControllPoint(i + 4*j);
                     const float kBu = ComputeBernsteinPolynormal(kU, i);
                     const float kBv = ComputeBernsteinPolynormal(kV, j);
-                    position += kBu * kBv * kControlPoint;
+                    position.Position += kBu * kBv * kControlPoint;
                 }
             }
         }
