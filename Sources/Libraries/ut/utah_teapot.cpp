@@ -6,10 +6,10 @@
 //  Copyright © 2016年 Shuto Shikama. All rights reserved.
 //
 
-#include "utah_teapot.hpp"
-#include "bezier_surface.hpp"
-#include "mesh_type.h"
-#include "utility.hpp"
+#include <ut/detail/bezier_surface.hpp>
+#include <ut/utah_teapot.hpp>
+#include <ut/utah_teapot.hpp>
+#include <ut/utility.hpp>
 #include <array>
 #include <fstream>
 #include <functional>

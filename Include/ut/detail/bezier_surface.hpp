@@ -9,7 +9,7 @@
 #ifndef bezier_surface_hpp
 #define bezier_surface_hpp
 
-#include "utility.hpp"
+#include <ut/utility.hpp>
 #include <array>
 #include <cstdint>
 #include <vector>
