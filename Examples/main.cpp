@@ -10,10 +10,10 @@
 #include <istream>
 #include <fstream>
 #include <ostream>
-#include "mesh_type.h"
-#include "utah_teapot.hpp"
-#include "bezier_surface.hpp"
-#include "utility.hpp"
+#include <ut/mesh_type.h>
+#include <ut/utah_teapot.hpp>
+#include <ut/bezier_surface.hpp>
+#include <ut/utility.hpp>
 
 int main(int argc, const char * argv[]) {
     
