@@ -12,10 +12,13 @@
 #include <ostream>
 #include <ut/mesh_type.h>
 #include <ut/utah_teapot.hpp>
+#include <ut/ut_CompileTimeUtahTeapot.h>
 #include <ut/utility.hpp>
 
 int main(int argc, const char * argv[]) {
     
+    const auto aa = ut::TUtahTeapot<1, 1>::Create();
+
     fj::UtahTeapot utahTeapod;
     utahTeapod.update(25, 25);
 
