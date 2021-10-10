@@ -1,0 +1,8 @@
+bin/
+lib/
+CMakeFiles/
+.vscode/
+*.cmake
+Makefile
+CMakeCache.txt
+compile_commands.json

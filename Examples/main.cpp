@@ -30,7 +30,7 @@ int main(int argc, const char * argv[]) {
     for (std::uint64_t i = 0; i < utahTeapod.getIndices().size(); i += 4)
     {
         output << "f " << utahTeapod.getIndices()[i+0] << " " << utahTeapod.getIndices()[i+1] << " " << utahTeapod.getIndices()[i+2] << " " << utahTeapod.getIndices()[i+3] << std::endl;
-    }
-    
+    }    
+
     return 0;
 }
