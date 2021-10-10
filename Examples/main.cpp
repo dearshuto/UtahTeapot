@@ -12,23 +12,22 @@
 #include <ostream>
 #include <ut/mesh_type.h>
 #include <ut/utah_teapot.hpp>
-#include <ut/utility.hpp>
 
 int main(int argc, const char * argv[]) {
     
-    fj::UtahTeapot utahTeapod;
-    utahTeapod.update(25, 25);
+    ut::TUtahTeapot<64, 64> utahTeapod;
+    utahTeapod.Reset(25, 25);
 
     std::ofstream output("utah_teapot_25x25.obj");
     
-    for (const auto& kPosition : utahTeapod.getVertices())
+    for (const auto& kPosition : utahTeapod.GetVertices())
     {
         output << "v " << kPosition.Position.X << " " << kPosition.Position.Y << " " << kPosition.Position.Z << std::endl;
     }
     
-    for (std::uint64_t i = 0; i < utahTeapod.getIndices().size(); i += 4)
+    for (std::uint64_t i = 0; i < utahTeapod.GetIndices().size(); i += 4)
     {
-        output << "f " << utahTeapod.getIndices()[i+0] << " " << utahTeapod.getIndices()[i+1] << " " << utahTeapod.getIndices()[i+2] << " " << utahTeapod.getIndices()[i+3] << std::endl;
+        output << "f " << utahTeapod.GetIndices()[i+0] << " " << utahTeapod.GetIndices()[i+1] << " " << utahTeapod.GetIndices()[i+2] << " " << utahTeapod.GetIndices()[i+3] << std::endl;
     }    
 
     return 0;

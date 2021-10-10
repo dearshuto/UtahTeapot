@@ -380,8 +380,10 @@ constexpr std::array<std::array<float, 3>, 306> g_vertices = {
      {0.798, -1.425, 0.0},
      {1.425, -0.798, 0.0}}};
 
-void fj::UtahTeapot::update(const std::uint64_t div,
-                            const std::uint64_t subDiv) {
+namespace ut { namespace detail {
+
+ void Setup(fj::Vertex* pVertices, int32_t vertexCount, uint32_t* pIndices, int32_t indexCount, int32_t divX, int32_t divY) noexcept
+ {
   int indexStride = 0;
   for (const Bezier16IndicesArray &bezierIndiices : g_indices) {
     fj::BezierSurface bezier;
@@ -391,20 +393,25 @@ void fj::UtahTeapot::update(const std::uint64_t div,
           fj::Vector{kVertex[0], kVertex[1], kVertex[2]};
     }
 
-    bezier.update(div, subDiv);
+    bezier.update(divX, divY);
 
+    auto vertexIndex = 0;
     for (const auto &index : bezier.getMeshInices()) {
       const auto kVertex = bezier.getMeshVertex(index);
-      m_vertices.push_back(kVertex);
+      pVertices[vertexIndex++] = kVertex;
     }
 
-    const std::vector<uint64_t> &kIndeces = bezier.getMeshInices();
-    for (std::uint64_t i = 0; i < kIndeces.size(); i += 4) {
-      m_indices.push_back(indexStride + i + 1);
-      m_indices.push_back(indexStride + i + 2);
-      m_indices.push_back(indexStride + i + 3);
-      m_indices.push_back(indexStride + i + 4);
+    auto indexIndex = 0;
+    const auto &kIndeces = bezier.getMeshInices();
+    for (std::uint64_t i = 0; i < kIndeces.size(); i += 4) 
+    {
+      pIndices[indexIndex++] = indexStride + i + 1;
+      pIndices[indexIndex++] = indexStride + i + 2;
+      pIndices[indexIndex++] = indexStride + i + 3;
+      pIndices[indexIndex++] = indexStride + i + 4;
     }
     indexStride += kIndeces.size();
   }
-}
+ }
+
+}}
