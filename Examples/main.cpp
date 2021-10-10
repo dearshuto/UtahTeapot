@@ -12,7 +12,6 @@
 #include <ostream>
 #include <ut/mesh_type.h>
 #include <ut/utah_teapot.hpp>
-#include <ut/bezier_surface.hpp>
 #include <ut/utility.hpp>
 
 int main(int argc, const char * argv[]) {

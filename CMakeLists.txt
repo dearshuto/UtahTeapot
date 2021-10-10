@@ -19,7 +19,7 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
 add_library(ut)
 target_include_directories(ut
-    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Include/ut
+    PRIVATE ${CMAKE_CURRENT_SOURCE_DIR}/Include
 )
 add_subdirectory(Include)
 add_subdirectory(Sources)

@@ -6,9 +6,9 @@
 //  Copyright © 2016年 Shuto Shikama. All rights reserved.
 //
 
-#include "bezier_surface.hpp"
-#include "mesh_type.h"
-#include "utility.hpp"
+#include <ut/detail/bezier_surface.hpp>
+#include <ut/mesh_type.h>
+#include <ut/utility.hpp>
 #include <cassert>
 #include <cmath>
 #include <functional>
