@@ -4,6 +4,12 @@ use self::bezier_surface::BezierSurface;
 mod common;
 
 #[derive(Clone, Copy, Default, Debug)]
+pub struct Float2 {
+    pub x: f32,
+    pub y: f32,
+}
+
+#[derive(Clone, Copy, Default, Debug)]
 pub struct Float3 {
     pub x: f32,
     pub y: f32,
@@ -25,14 +31,11 @@ impl UtahTeapot {
         }
     }
 
-    pub fn new_with_div(_div: u8, _sub_div: u8) -> Self {
-        todo!()
-    }
-
     pub fn update(&mut self, div: u8, sub_div: u8) {
         let index_stride = 0u32;
         for indices in self::common::UTA_TEAPOT_INDICES {
             let mut bezier_surface = BezierSurface::new();
+
             for i in 0..indices.len() {
                 let index = indices[i] - 1;
                 let vertex = &self::common::UTAH_TEAPOT_VERTICES[index as usize];
@@ -50,7 +53,7 @@ impl UtahTeapot {
 
             // 頂点情報
             for index in bezier_surface.get_indices() {
-                let vertex = &bezier_surface.get_control_point_position()[*index as usize];
+                let vertex = &bezier_surface.get_positions()[*index as usize];
                 self._positions.push(*vertex);
             }
 
