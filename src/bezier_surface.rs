@@ -34,16 +34,16 @@ impl BezierSurface {
 
         // 縦横の超点数
         // 両端に頂点があるので +2 してます
-        let n_count = div + 2;
-        let m_count = sub_div + 2;
+        let n_count = (div as u32) + 2;
+        let m_count: u32 = (sub_div as u32) + 2;
 
         let mut uv = Vec::<Float2>::new();
         uv.resize((n_count * m_count) as usize, Float2::default());
         self._positions
             .resize((n_count * m_count) as usize, Float3::default());
 
-        let stride_u = 1.0 / (div + 1) as f32;
-        let stride_v = 1.0 / (sub_div + 1) as f32;
+        let stride_u = 1.0 / ((div as f32) + 1.0);
+        let stride_v = 1.0 / ((sub_div as f32) + 1.0);
 
         for n in 0..n_count {
             for m in 0..m_count {
@@ -112,7 +112,7 @@ impl BezierSurface {
     pub fn get_indices(&self) -> &[u32] {
         &self._indices
     }
-	
+
     fn compute_bernstein_polynormal(t: f32, i: u32) -> f32 {
         assert!(0.0 <= t && t <= 1.0);
         assert!(i <= 3); // 3 次
@@ -136,16 +136,13 @@ impl BezierSurface {
     }
 }
 
-
 #[cfg(test)]
-pub mod tests
-{
-	#[test]
-	fn test()
-	{
-		let bu = super::BezierSurface::compute_bernstein_polynormal(0.0, 0);
-		let bv = super::BezierSurface::compute_bernstein_polynormal(1.0, 3);
-		assert_eq!(bu, 1.0);
-		assert_eq!(bv, 1.0);
-	}
+pub mod tests {
+    #[test]
+    fn test() {
+        let bu = super::BezierSurface::compute_bernstein_polynormal(0.0, 0);
+        let bv = super::BezierSurface::compute_bernstein_polynormal(1.0, 3);
+        assert_eq!(bu, 1.0);
+        assert_eq!(bv, 1.0);
+    }
 }
