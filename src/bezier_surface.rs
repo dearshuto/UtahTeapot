@@ -1,3 +1,5 @@
+use std::{default, vec};
+
 use crate::{Float2, Float3};
 
 pub struct BezierSurface {
@@ -28,6 +30,8 @@ impl BezierSurface {
     }
 
     pub fn update(&mut self, div: u8, sub_div: u8) {
+        self.update_control_point_normal();
+
         self._indices.clear();
         self._positions.clear();
         self._normals.clear();
@@ -113,6 +117,76 @@ impl BezierSurface {
         &self._indices
     }
 
+    fn update_control_point_normal(&mut self) {
+        // ベジエ曲面の各面に以下のインデクスを割り当てる
+        // +-+-+-+
+        // |0|1|2|
+        // |3|4|5|
+        // |6|7|8|
+
+        // 各制御点がどの面に影響を受けるかをあらわすインデクス
+        let surface_indices = [
+            [0, -1, -1, -1],
+            [0, 1, -1, -1],
+            [1, 2, -1, -1],
+            [2, -1, -1, -1],
+            [0, 3, -1, -1],
+            [0, 1, 3, 4],
+            [1, 2, 4, 5],
+            [2, 5, -1, -1],
+            [3, 6, -1, -1],
+            [3, 4, 6, 7],
+            [4, 5, 7, 8],
+            [5, 7, -1, -1],
+            [6, -1, -1, -1],
+            [6, 7, -1, -1],
+            [7, 8, -1, -1],
+            [8, -1, -1, -1],
+        ];
+
+        // 各面の法線
+        let surface_normals = [
+            self.calculate_dot(0, 4, 1),
+            self.calculate_dot(1, 5, 2),
+            self.calculate_dot(2, 6, 3),
+            self.calculate_dot(4, 8, 5),
+            self.calculate_dot(5, 9, 6),
+            self.calculate_dot(6, 10, 7),
+            self.calculate_dot(8, 12, 9),
+            self.calculate_dot(9, 13, 10),
+            self.calculate_dot(10, 14, 11),
+        ];
+
+        // 制御点が属する面の法線の平均を制御店の法線とする
+        // 足し込むのですべてゼロ初期化
+        for i in 0..self._control_point_normal.len() {
+            self._control_point_normal[i] = std::default::Default::default();
+        }
+
+        for i in 0..self._control_point_normal.len() {
+            for surface_index in surface_indices[i] {
+                if surface_index < 0 {
+                    continue;
+                }
+
+                self._control_point_normal[i].x += surface_normals[surface_index as usize].x;
+                self._control_point_normal[i].y += surface_normals[surface_index as usize].y;
+                self._control_point_normal[i].z += surface_normals[surface_index as usize].z;
+
+                self._control_point_normal[i].normalize();
+            }
+        }
+    }
+
+    fn calculate_dot(&self, index0: usize, index1: usize, index2: usize) -> Float3 {
+        let vector0 = self._control_point_position[index0]
+            .direction_to(&self._control_point_position[index1]);
+        let vector1 = self._control_point_position[index0]
+            .direction_to(&self._control_point_position[index2]);
+        let result = vector0.dot(&vector1);
+        result
+    }
+
     fn compute_bernstein_polynormal(t: f32, i: u32) -> f32 {
         assert!(0.0 <= t && t <= 1.0);
         assert!(i <= 3); // 3 次
@@ -132,6 +206,31 @@ impl BezierSurface {
             0 => 1,
             1 => 1,
             _ => Self::fractrial(n - 1) * n,
+        }
+    }
+}
+
+impl Float3 {
+    pub fn direction_to(&self, other: &Float3) -> Self {
+        Self {
+            x: other.x - self.x,
+            y: other.y - self.y,
+            z: other.z - self.z,
+        }
+    }
+
+    pub fn normalize(&mut self) {
+        let norm = (self.x * self.x + self.y * self.y + self.z * self.z).sqrt();
+        self.x /= norm;
+        self.y /= norm;
+        self.z /= norm;
+    }
+
+    pub fn dot(&self, other: &Float3) -> Self {
+        Self {
+            x: self.y * other.z - other.y * self.z,
+            y: -(self.x * other.z - other.x * self.z),
+            z: self.x * other.y - other.x * self.y,
         }
     }
 }
