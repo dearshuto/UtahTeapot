@@ -1,5 +1,3 @@
-use std::{default, vec};
-
 use crate::{Float2, Float3};
 
 pub struct BezierSurface {
