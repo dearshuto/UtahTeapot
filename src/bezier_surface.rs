@@ -1,4 +1,4 @@
-use crate::{Float2, Float3};
+use crate::{Float2, Float3, FrontFace};
 
 pub struct BezierSurface {
     _control_point_position: [Float3; 16],
@@ -27,8 +27,8 @@ impl BezierSurface {
         }
     }
 
-    pub fn update(&mut self, div: u8, sub_div: u8) {
-        self.update_control_point_normal();
+    pub fn update(&mut self, div: u8, sub_div: u8, front_face: FrontFace) {
+        self.update_control_point_normal(front_face);
 
         self._indices.clear();
         self._positions.clear();
@@ -42,6 +42,8 @@ impl BezierSurface {
         let mut uv = Vec::<Float2>::new();
         uv.resize((n_count * m_count) as usize, Float2::default());
         self._positions
+            .resize((n_count * m_count) as usize, Float3::default());
+        self._normals
             .resize((n_count * m_count) as usize, Float3::default());
 
         let stride_u = 1.0 / ((div as f32) + 1.0);
@@ -75,6 +77,17 @@ impl BezierSurface {
                             bernstein_polynormal_u * bernstein_polynormal_v * control_point.y;
                         self._positions[current_index].z +=
                             bernstein_polynormal_u * bernstein_polynormal_v * control_point.z;
+
+                        let control_point_normal = &self._control_point_normal[i + j * 4];
+                        self._normals[current_index].x += bernstein_polynormal_u
+                            * bernstein_polynormal_v
+                            * control_point_normal.x;
+                        self._normals[current_index].y += bernstein_polynormal_u
+                            * bernstein_polynormal_v
+                            * control_point_normal.y;
+                        self._normals[current_index].z += bernstein_polynormal_u
+                            * bernstein_polynormal_v
+                            * control_point_normal.z;
                     }
                 }
             }
@@ -99,6 +112,10 @@ impl BezierSurface {
         &self._positions
     }
 
+    pub fn get_normals(&self) -> &[Float3] {
+        &self._normals
+    }
+
     // pub fn get_control_point_position(&self) -> &[Float3] {
     //     &self._control_point_position
     // }
@@ -115,7 +132,7 @@ impl BezierSurface {
         &self._indices
     }
 
-    fn update_control_point_normal(&mut self) {
+    fn update_control_point_normal(&mut self, front_face: FrontFace) {
         // ベジエ曲面の各面に以下のインデクスを割り当てる
         // +-+-+-+
         // |0|1|2|
@@ -143,17 +160,31 @@ impl BezierSurface {
         ];
 
         // 各面の法線
-        let surface_normals = [
-            self.calculate_dot(0, 4, 1),
-            self.calculate_dot(1, 5, 2),
-            self.calculate_dot(2, 6, 3),
-            self.calculate_dot(4, 8, 5),
-            self.calculate_dot(5, 9, 6),
-            self.calculate_dot(6, 10, 7),
-            self.calculate_dot(8, 12, 9),
-            self.calculate_dot(9, 13, 10),
-            self.calculate_dot(10, 14, 11),
-        ];
+        let surface_normals = match front_face {
+            FrontFace::Clockwise => [
+                self.calculate_dot(0, 1, 4),
+                self.calculate_dot(1, 2, 5),
+                self.calculate_dot(2, 3, 6),
+                self.calculate_dot(4, 5, 8),
+                self.calculate_dot(5, 6, 9),
+                self.calculate_dot(6, 7, 10),
+                self.calculate_dot(8, 9, 12),
+                self.calculate_dot(9, 10, 13),
+                self.calculate_dot(10, 11, 14),
+            ],
+            FrontFace::CounterClockwise => [
+                self.calculate_dot(0, 4, 1),
+                self.calculate_dot(1, 5, 2),
+                self.calculate_dot(2, 6, 3),
+                self.calculate_dot(4, 8, 5),
+                self.calculate_dot(5, 9, 6),
+                self.calculate_dot(6, 10, 7),
+                self.calculate_dot(8, 12, 9),
+                self.calculate_dot(9, 13, 10),
+                self.calculate_dot(10, 14, 11),
+            ],
+            _ => todo!(),
+        };
 
         // 制御点が属する面の法線の平均を制御店の法線とする
         // 足し込むのですべてゼロ初期化

@@ -80,12 +80,15 @@ impl UtahTeapot {
                 )
             }
 
-            bezier_surface.update(div, sub_div);
+            bezier_surface.update(div, sub_div, front_face);
 
             // 頂点情報
             for index in bezier_surface.get_indices() {
                 let vertex = &bezier_surface.get_positions()[*index as usize];
                 self._positions.push(*vertex);
+
+                let normal = &bezier_surface.get_normals()[*index as usize];
+                self._normals.push(*normal);
             }
 
             // インデクス情報
