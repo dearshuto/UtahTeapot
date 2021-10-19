@@ -3,6 +3,12 @@ use self::bezier_surface::BezierSurface;
 
 mod common;
 
+#[derive(Clone, Copy, Debug)]
+enum FrontFace {
+    Clockwise,
+    CounterClockwise,
+}
+
 #[derive(Clone, Copy, Default, Debug)]
 pub struct Float2 {
     pub x: f32,
@@ -31,7 +37,32 @@ impl UtahTeapot {
         }
     }
 
+    #[deprecated]
     pub fn update(&mut self, div: u8, sub_div: u8) {
+        self.update_impl(div, sub_div, FrontFace::CounterClockwise);
+    }
+
+    pub fn update_clockwise(&mut self, div: u8, sub_div: u8) {
+        self.update_impl(div, sub_div, FrontFace::Clockwise);
+    }
+
+    pub fn update_counter_clockwise(&mut self, div: u8, sub_div: u8) {
+        self.update_impl(div, sub_div, FrontFace::CounterClockwise);
+    }
+
+    pub fn get_positions(&self) -> &[Float3] {
+        &self._positions
+    }
+
+    pub fn get_normals(&self) -> &[Float3] {
+        &self._normals
+    }
+
+    pub fn get_indices(&self) -> &[u32] {
+        &self._indices
+    }
+
+    fn update_impl(&mut self, div: u8, sub_div: u8, front_face: FrontFace) {
         let mut index_stride = 0u32;
         for indices in self::common::UTA_TEAPOT_INDICES {
             let mut bezier_surface = BezierSurface::new();
@@ -51,32 +82,31 @@ impl UtahTeapot {
 
             bezier_surface.update(div, sub_div);
 
-            // 頂点情報			
+            // 頂点情報
             for index in bezier_surface.get_indices() {
                 let vertex = &bezier_surface.get_positions()[*index as usize];
                 self._positions.push(*vertex);
             }
 
             // インデクス情報
-            for i in 0..(bezier_surface.get_indices().len() as u32 / 3) {
-                self._indices.push(index_stride + 3 * i + 0);
-                self._indices.push(index_stride + 3 * i + 1);
-                self._indices.push(index_stride + 3 * i + 2);
+            match front_face {
+                FrontFace::Clockwise => {
+                    for i in 0..(bezier_surface.get_indices().len() as u32 / 3) {
+                        self._indices.push(index_stride + 3 * i + 0);
+                        self._indices.push(index_stride + 3 * i + 2);
+                        self._indices.push(index_stride + 3 * i + 1);
+                    }
+                }
+                FrontFace::CounterClockwise => {
+                    for i in 0..(bezier_surface.get_indices().len() as u32 / 3) {
+                        self._indices.push(index_stride + 3 * i + 0);
+                        self._indices.push(index_stride + 3 * i + 1);
+                        self._indices.push(index_stride + 3 * i + 2);
+                    }
+                }
             }
 
-			index_stride += bezier_surface.get_indices().len() as u32;
+            index_stride += bezier_surface.get_indices().len() as u32;
         }
-    }
-
-    pub fn get_positions(&self) -> &[Float3] {
-        &self._positions
-    }
-
-    pub fn get_normals(&self) -> &[Float3] {
-        &self._normals
-    }
-
-    pub fn get_indices(&self) -> &[u32] {
-        &self._indices
     }
 }

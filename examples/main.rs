@@ -23,7 +23,7 @@ fn main() {
     let sub_div = matches.value_of("subdiv").unwrap().parse::<u8>().unwrap();
 
     let mut utah_teapot = ut::UtahTeapot::new();
-    utah_teapot.update(div, sub_div);
+    utah_teapot.update_clockwise(div, sub_div);
 
     let set = obj_exporter::ObjSet {
         material_library: None,
