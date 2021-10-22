@@ -1,13 +1,9 @@
 mod bezier_surface;
+use bezier_surface::FrontFace;
+
 use self::bezier_surface::BezierSurface;
 
 mod common;
-
-#[derive(Clone, Copy, Debug)]
-enum FrontFace {
-    Clockwise,
-    CounterClockwise,
-}
 
 #[derive(Clone, Copy, Default, Debug)]
 pub struct Float2 {
