@@ -1,4 +1,10 @@
-use crate::{Float2, Float3, FrontFace};
+use crate::{Float2, Float3};
+
+#[derive(Clone, Copy, Debug)]
+pub enum FrontFace {
+    Clockwise,
+    CounterClockwise,
+}
 
 pub struct BezierSurface {
     _control_point_position: [Float3; 16],
@@ -183,7 +189,6 @@ impl BezierSurface {
                 self.calculate_dot(9, 13, 10),
                 self.calculate_dot(10, 14, 11),
             ],
-            _ => todo!(),
         };
 
         // 制御点が属する面の法線の平均を制御店の法線とする
