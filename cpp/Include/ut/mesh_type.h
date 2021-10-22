@@ -11,13 +11,11 @@
 
 #include <cstdint>
 
-struct SquareMesh
-{
-    static const uint8_t VertexNumPerMesh = 4;
+struct SquareMesh {
+  static const uint8_t VertexNumPerMesh = 4;
 };
-struct TriangleMesh
-{
-    static const uint8_t VertexNumPerMesh = 4;
+struct TriangleMesh {
+  static const uint8_t VertexNumPerMesh = 4;
 };
 
 #endif /* mesh_type_h */
