@@ -3,6 +3,9 @@ name = "ut"
 edition = "2021"
 version = "0.21.0"
 
+[lib]
+crate-type = ["dylib", "staticlib"]
+
 [dependencies]
 
 [dev-dependencies]
