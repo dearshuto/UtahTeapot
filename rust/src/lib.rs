@@ -3,6 +3,7 @@ use bezier_surface::FrontFace;
 
 use self::bezier_surface::BezierSurface;
 
+mod c_ffi;
 mod common;
 
 #[derive(Clone, Copy, Default, Debug)]
